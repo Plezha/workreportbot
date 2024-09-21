@@ -24,6 +24,8 @@ private const val botToken = ""
 
 @OptIn(PreviewFeature::class)
 suspend fun main(args: Array<String>) {
+    if (!SheetsApi.areTokensValid()) SheetsApi.refreshCredentials()
+
     val storage = UserStorage()
 
     telegramBotWithBehaviourAndFSMAndStartLongPolling<BotState>(

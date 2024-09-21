@@ -1,4 +1,5 @@
 import com.google.api.client.auth.oauth2.Credential
+import com.google.api.client.auth.oauth2.TokenResponseException
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver.Builder
@@ -34,6 +35,16 @@ object SheetsApi {
     }
 
     fun appendRowDataToSheet(values: List<String?>) = appendRectangularDataToSheet(listOf(values))
+
+    fun areTokensValid(): Boolean {
+        return try {
+            service.spreadsheets().get(SPREADSHEET_ID).execute()
+            true // Success: Tokens are valid
+        } catch (e: TokenResponseException) {
+            println("Token validation failed: ${e.message}")
+            false // Failure: Tokens are likely invalid
+        }
+    }
 
     fun refreshCredentials() {
         File(TOKENS_DIRECTORY_PATH).deleteRecursively()
